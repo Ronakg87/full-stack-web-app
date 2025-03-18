@@ -49,9 +49,23 @@ app.post("/api/add-product",
     body('sku').not().isEmpty(),
     body('description').not().isEmpty(),
     body('category').not().isEmpty(),
+    body('source').not().isEmpty(),
     // body('logo').not().isEmpty(),
     errors,
     product_controller.add_product);
+
+    app.route('/product/:id').delete(auth, product_controller.deleteproduct).patch(auth, product_controller.updateproduct).get(auth, product_controller.getproduct);
+app.post("/api/add-product",
+    auth,
+    body('product_name').not().isEmpty().trim().escape(),
+    body('sku').not().isEmpty(),
+    body('description').not().isEmpty(),
+    body('category').not().isEmpty(),
+    // body('logo').not().isEmpty(),
+    errors,
+    product_controller.add_product);
+
+    app.get("/all-products", product_controller.getallproducts);
 
     
 // app.post("/api/secure_password", body('password','Password should be combination of one uppercase , one lower case, one special char, one digit and min 8 , max 20 char long').isStrongPassword({
