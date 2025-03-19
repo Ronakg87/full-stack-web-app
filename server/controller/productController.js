@@ -9,7 +9,7 @@ const add_product = async (req, res) => {
           sku: req.body.sku,
           description: req.body.description,
           category: req.body.category,
-          logo: req.body.logo,
+          logo: req.file.filename,
           source: req.user.role,
           assignedTo: req.body.assignedTo
             

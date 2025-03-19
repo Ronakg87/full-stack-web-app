@@ -68,7 +68,7 @@ const user_login = async (req, res) => {
           // name: userData.name,
           // email: userData.email,
           // password: userData.password,
-          // role: userData.role,
+          role: userData.role,
           // // image: userData.image,
           // // mobile: userData.mobile,
           // // type: userData.type,
