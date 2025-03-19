@@ -10,14 +10,16 @@ const verify_token = async (req, res, next) => {
       .status(200)
       .send({ success: false, msg: "A token is required for authorization" });
   }
-  console.log(req);
+ 
+  
+
   try {
     const token_verify = await jwt.verify(token, config.secret_key);
     req.user = token_verify;
-    console.log(User);
-    console.log(token_verify);
+    // console.log(User);
+    // console.log(token_verify);
     const user = await User.findById(token_verify);
-
+    
     if (!user) {
       return res
         .status(500)
@@ -26,6 +28,7 @@ const verify_token = async (req, res, next) => {
           msg: "User doesn't exists",
         });
     }
+    req.user = user;
   } catch (error) {
     return res.status(400).send("Invalid Token");
   }

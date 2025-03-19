@@ -35,9 +35,6 @@ const register_user = async (req, res) => {
       email: req.body.email,
       password: spassword,
       role:req.body.role
-      // image: req.file.filename,
-      // mobile: req.body.mobile,
-      // type: req.body.type,
     });
 
     const userData = await User.findOne({ email: req.body.email });
@@ -67,14 +64,14 @@ const user_login = async (req, res) => {
       if (passwordMatch) {
         const tokendata = await create_token(userData._id);
         const userResult = {
-          _id: userData._id,
-          name: userData.name,
-          email: userData.email,
-          password: userData.password,
-          role: userData.role,
-          // image: userData.image,
-          // mobile: userData.mobile,
-          // type: userData.type,
+          // _id: userData._id,
+          // name: userData.name,
+          // email: userData.email,
+          // password: userData.password,
+          // role: userData.role,
+          // // image: userData.image,
+          // // mobile: userData.mobile,
+          // // type: userData.type,
           token: tokendata,
         };
 
@@ -110,42 +107,42 @@ const auth = async (req, res) => {
   } catch (error) {}
 };
 
-// const update_password = async (req, res) => {
-//   try {
-//     const user_id = req.body.user_id;
-//     const password = req.body.password;
-    
-//     const data = await User.findOne({ _id: user_id });
+const update_password = async (req, res) => {
+  try {
+    const user_id = req.body.user_id;
+    const password = req.body.password;
+    console.log(user_id);
+    const data = await User.findOne({ _id: user_id });
 
-//     if (data) {
-//       const new_password = await securepassword(password);
+    if (data) {
+      const new_password = await securepassword(password);
 
-//       User.findByIdAndUpdate(
-//         { _id: user_id },
-//         {
-//           $set: {
-//             password: new_password,
-//           }
-//         },{new:true},function(err, result){
-//           if(err)
-//             console.log(err)
-//           console.log("Result:-"+result)
-//         }
-//       );
+      User.findByIdAndUpdate(
+        { _id: user_id },
+        {
+          $set: {
+            password: new_password,
+          }
+        },{new:true},function(err, result){
+          if(err)
+            console.log(err)
+          // console.log("Result:-"+result)
+        }
+      );
 
-//       res
-//         .status(200)
-//         .send({
-//           success: true,
-//           msg: "Your password has been updated successfully.",
-//         });
-//     } else {
-//       res.status(200).send({ success: false, msg: "user id not found!" });
-//     }
-//   } catch (error) {
-//     res.status(400).send(error.message);
-//   }
-// };
+      res
+        .status(200)
+        .send({
+          success: true,
+          msg: "Your password has been updated successfully.",
+        });
+    } else {
+      res.status(200).send({ success: false, msg: "user id not found!" });
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
 
 // const forget_password = async (req, res) => {
 //   try {
@@ -226,66 +223,70 @@ const auth = async (req, res) => {
 //     }
 // }
 
-// const getuser = async (req, res) => {
-//   const id = req.params.id;
+const getuser = async (req, res) => {
+  const id = req.params.id;
 
-//   try {
-//     if(req.user._id != id){
-//       return res.status(200).send({success: true, msg:"Authrization token is not matched."});
-//     }
+  try {
+    if(req.user._id != id){
+      return res.status(200).send({success: true, msg:"Authrization token is not matched."});
+    }
   
-//     const userdata = await User.findById({_id:id});
-//     res.status(200).send({success: true, msg:"User details fetched successfully.", data: userdata});
-//   } catch (error) {
-//     res.status(400).send({success: false, msg: error.message});
-//   }
+    const userdata = await User.findById({_id:id});
+    res.status(200).send({success: true, msg:"User details fetched successfully.", data: userdata});
+  } catch (error) {
+    res.status(400).send({success: false, msg: error.message});
+  }
   
-// }
+}
 
-// const updateuser = async (req, res) =>{
-//   const uid = req.params.id;
+const updateuser = async (req, res) =>{
+  const uid = req.params.id;
 
-//   try {
-//     if(req.user._id != uid){
-//       return res.status(200).send({success: true, msg:"Authrization token is not matched."});
-//     }
+  try {
+    if(req.user._id != uid){
+      return res.status(200).send({success: true, msg:"Authrization token is not matched."});
+    }
 
-//     const userdata = User.findOne({ _id : uid});
+    const userdata = User.findOne({ _id : uid});
     
-//     if(!userdata) return res.status(404).json({success: false, msg:"user is not found !!!"});
-//     const new_name = req.body.name;
-//     const new_email = req.body.email;
+    if(!userdata) return res.status(404).json({success: false, msg:"user is not found !!!"});
+    const new_name = req.body.name;
+    const new_email = req.body.email;
     
-//     const updatedata = await User.findByIdAndUpdate({ _id:uid }, {
-//       $set: {
-//         name: new_name, email: new_email
-//       }},{new: true});
+    const updatedata = await User.findByIdAndUpdate({ _id:uid }, {
+      $set: {
+        name: new_name, email: new_email
+      }},{new: true});
     
-//     if(updatedata) res.status(200).json({success: true, msg:`User profile updated with ${updatedata} successfully.`})
+    if(updatedata) res.status(200).json({success: true, msg:`User profile updated successfully.`})
     
-//   } catch (error) {
-//     res.status(400).json({success: false, msg: error.message});
-//   }
-// }
+  } catch (error) {
+    res.status(400).json({success: false, msg: error.message});
+  }
+}
 
-// const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
 
-//   try {
-//     const allUserDetails = User.find({}, function(err, usersData){
-//       if(err)
-//         console.log(err);
-//       if(usersData){
-//         // console.log("Users count : " + usersData.length);
-//         // console.log(usersData);
-//         res.status(200).send({success:true,msg:"All Users Data has Fetched Successfully.", result:usersData});
-//       }  
-//     });
+  try {
+    // const allUserDetails = User.find({}, function(err, usersData){
+    //   if(err)
+    //     console.log(err);
+    //   if(usersData){
+    //     // console.log("Users count : " + usersData.length);
+    //     // console.log(usersData);
+    //     res.status(200).send({success:true,msg:"All Users Data has Fetched Successfully.", result:usersData});
+    //   }  
+    // });
+    const allUserDetails = await User.find();
+    res.status(200).send({success:true,msg:"All Products Data has been Fetched Successfully.", result:allUserDetails});
 
-//   } catch (error) {
-//     res.status(400).json({success: false, msg: error.message});
-//   }
+  } catch (error) {
+    res.status(400).json({success: false, msg: error.message});
+  }
   
-// }
+}
+
+
 
 
 module.exports = {
@@ -293,11 +294,11 @@ module.exports = {
   user_login,
   securepassword,
   auth,
-  // update_password,
+  update_password,
   // forget_password,
   // reset_password,
   // deleteuser,
-  // getuser,
-  // updateuser,
-  // getAllUsers
+  getuser,
+  updateuser,
+  getAllUsers,
 };
