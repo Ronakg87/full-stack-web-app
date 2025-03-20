@@ -3,6 +3,7 @@ const bcryptjs = require("bcryptjs");
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
+const mongoose = require("mongoose");
 
 const create_token = async (id) => {
   try {
@@ -277,8 +278,8 @@ const getAllUsers = async (req, res) => {
     //     res.status(200).send({success:true,msg:"All Users Data has Fetched Successfully.", result:usersData});
     //   }  
     // });
-    const allUserDetails = await User.find();
-    res.status(200).send({success:true,msg:"All Products Data has been Fetched Successfully.", result:allUserDetails});
+    const allUserDetails = await User.find({_id:{$ne: req.user._id}});
+    res.status(200).send({success:true,msg:"All Users Data has been Fetched Successfully.", result:allUserDetails});
 
   } catch (error) {
     res.status(400).json({success: false, msg: error.message});
@@ -286,6 +287,31 @@ const getAllUsers = async (req, res) => {
   
 }
 
+
+const getuserbyids = async (req, res) => {
+  try {
+    const { ids } = req.params.ids; // Array of user IDs
+    console.log(ids);
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "Invalid user IDs" });
+    }
+
+    // Split and map the IDs into ObjectId format
+    // const idArray = ids.split(",").map(id => mongoose.Types.ObjectId(id.trim()));
+
+    // Fetch products by multiple IDs
+    const users = await User.find({ _id: { $in: ids.jsonStringify() } });
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No user found" });
+    }
+
+    res.status(200).json.send({success: true, msg:"User details fetched successfully.", data: users});;
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
 
 
 
@@ -299,6 +325,7 @@ module.exports = {
   // reset_password,
   // deleteuser,
   getuser,
+  getuserbyids,
   updateuser,
   getAllUsers,
 };

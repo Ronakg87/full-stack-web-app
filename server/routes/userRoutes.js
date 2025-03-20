@@ -31,5 +31,8 @@ router.route('/user/:id')
   .patch(auth, user_controller.updateuser)
   .get(auth, user_controller.getuser);
 
-router.get('/allusers', user_controller.getAllUsers);
+router.get('/allusers', auth, UserCreationAccess, user_controller.getAllUsers);
+
+router.get('/get-users?id=', auth, UserCreationAccess, user_controller.getuserbyids);
+
 module.exports = router;

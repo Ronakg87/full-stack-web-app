@@ -79,8 +79,8 @@ const getproduct = async (req, res) => {
     // }
   
     // const userdata = await Product.findById({_id:id});
-    const productdata = await Product.find({_id:id, assignedTo: req.user._id}).populate('assignedTo', req.user._id);
-    console.log(productdata);
+    const productdata = await Product.find({_id:id, assignedTo: req.user._id}).populate('assignedTo', '_id name email');
+    // console.log(productdata);
     if(productdata.length === 0){
       res.status(200).send({success: true, msg:"No Data Found.", data: productdata});
     }
@@ -170,6 +170,7 @@ const assignProductToUsers = async (req, res) =>{
     res.status(400).json({success: false, msg: error.message});
   }
 }
+
 
 module.exports = {
     add_product,

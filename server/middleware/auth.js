@@ -3,7 +3,7 @@ const config = require("../config/config");
 const User = require("../model/userModel");
 
 const verify_token = async (req, res, next) => {
-  const token = req.body.token || req.query.token || req.header('Authorization').replace('Bearer ', '');
+  const token = req.body.token || req.query.token || (req.header('Authorization')? req.header('Authorization').replace('Bearer ', '') : '');
   if (!token) {
     return res
       .status(200)
