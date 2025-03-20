@@ -278,7 +278,7 @@ const getAllUsers = async (req, res) => {
     //     res.status(200).send({success:true,msg:"All Users Data has Fetched Successfully.", result:usersData});
     //   }  
     // });
-    const allUserDetails = await User.find({_id:{$ne: req.user._id}});
+    const allUserDetails = await User.find({_id:{$ne: req.user._id}}, 'name email role');
     res.status(200).send({success:true,msg:"All Users Data has been Fetched Successfully.", result:allUserDetails});
 
   } catch (error) {
@@ -290,23 +290,26 @@ const getAllUsers = async (req, res) => {
 
 const getuserbyids = async (req, res) => {
   try {
-    const { ids } = req.params.ids; // Array of user IDs
-    console.log(ids);
+    const { ids } = req.body; // Array of user IDs
+    
     if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(400).json({ message: "Invalid user IDs" });
     }
 
-    // Split and map the IDs into ObjectId format
-    // const idArray = ids.split(",").map(id => mongoose.Types.ObjectId(id.trim()));
-
-    // Fetch products by multiple IDs
-    const users = await User.find({ _id: { $in: ids.jsonStringify() } });
+    // const users = await User.find({ _id: { $in: ids } });
+    const users = await User.find(
+      { _id: { $in: ids } },
+      'name email role' // Only include these fields
+    );
+    // const users = await User.find(
+    //   { _id: { $in: ids } }
+    // ).select('-password');
 
     if (users.length === 0) {
       return res.status(404).json({ message: "No user found" });
     }
-
-    res.status(200).json.send({success: true, msg:"User details fetched successfully.", data: users});;
+    
+    res.status(200).send({success: true, msg:"User details fetched successfully.", data: users});;
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Server error", error });

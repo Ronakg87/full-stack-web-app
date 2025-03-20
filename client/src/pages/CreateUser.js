@@ -14,28 +14,43 @@ const CreateUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(createUser({ name, email, password, role: "admin" }));
+    await dispatch(createUser({ name, email, password, role: "user" }));
     toast.success("User created successfully!");
     navigate("/users");
   };
+
+  const goBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
+
 
   return (
     <div className="dashboard-container">
       <Sidebar />
       <div className="content">
-        <h2>Create User</h2>
-        <form onSubmit={handleSubmit}>
-          <label>Name:</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+        <div className="back-button">
+          <button
+              onClick={goBack}
+              className="back_btn"
+            >
+              🔙
+            </button>
+        </div>
+        <div className="form-section">
+          <h2>Create User</h2>
+          <form onSubmit={handleSubmit}>
+            <label>Name:</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
 
-          <label>Email:</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <label>Email:</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-          <label>Password:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <label>Password:</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-          <button type="submit">Create User</button>
-        </form>
+            <button type="submit">Create User</button>
+          </form>
+        </div>
       </div>
     </div>
   );

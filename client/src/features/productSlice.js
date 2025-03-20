@@ -19,34 +19,22 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
-// Fetch User Details by ID
-export const fetchUserById = createAsyncThunk(
-  "users/fetchUserById",
-  async (userId, { rejectWithValue }) => {
-    try {
-      const res = await axios.get(`${API_URL}/user/${userId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      console.log("result", res.data);
-      return { userId, data: res.data.data };
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Failed to fetch user data");
-    }
-  }
-);
-
 // Create Product
 export const createProduct = createAsyncThunk(
   "products/createProduct",
-  async (productData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/add-product`, productData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      const res = await axios.post(`${API_URL}/add-product`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
+
       toast.success("Product created successfully!");
       return res.data;
     } catch (error) {
-      toast.error(error.response?.data || "Failed to create product");
+      toast.error(error.response?.data?.msg || "Failed to create product");
       return rejectWithValue(error.response?.data || "Failed to create product");
     }
   }
@@ -107,16 +95,6 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-      })
-
-      // ✅ Fetch User By ID
-      .addCase(fetchUserById.fulfilled, (state, action) => {
-        const { userId, data } = action.payload;
-        console.log(data,"data");
-        state.users[userId] = data;  // Store user details in the state
-      })
-      .addCase(fetchUserById.rejected, (state, action) => {
         state.error = action.payload;
       })
 

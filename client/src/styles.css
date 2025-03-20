@@ -326,12 +326,16 @@ body {
   /* max-width: 80%; */
   margin: 0 auto;
   background: #fff;
-  padding: 30px;
   border-radius: 8px;
   box-shadow: 0 0 10px #ccc;
-  margin-left: 20%;
-  padding: 5px 25px;
+  margin-left: 20.5%;
+  /* padding: 0px 25px; */
   width: 80%;
+}
+
+.form-section {
+  margin-left:20px;
+  padding: 0px 25px;
 }
 
 .header {
@@ -349,6 +353,14 @@ h2 {
   background: #4CAF50;
   color: #fff;
   padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+.edit-btn {
+  background: #0d6efd;
+  color: #fff;
+  padding: 8px 16px;
   text-decoration: none;
   border-radius: 5px;
   transition: 0.3s;
@@ -425,16 +437,26 @@ table tr:hover {
   }
 }
 
-.add-product-btn {
+.add-product-btn, .btn-primary {
   float:right;
   margin: 10px 0px;
 }
 .delete-btn {
-  color: #fff;
-  background-color: #d32f2f;
-  border-radius: 5%;
   margin: 2px 10px;
+  background: #d32f2f;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: 0.3s;
 }
 
+.back_btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  margin-right: 10px;
+}
 
 

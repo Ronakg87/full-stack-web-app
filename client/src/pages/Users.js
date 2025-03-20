@@ -16,42 +16,71 @@ const Users = () => {
   }, [dispatch]);
 
 
-  if (error === 'Access denied') {
+  useEffect(() => {
+    if (error === "Access denied") {
       dispatch(logoutUser());
       navigate("/");
-  }
+    }
+  }, [error, dispatch, navigate]);
+
+  const goBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
 
   return (
     <div className="dashboard-container">
       <Sidebar />
       <div className="content">
-        <h2>Users</h2>
-        <Link to="/create-user" className="btn btn-primary">Create User</Link>
+        <div className="back-button">
+          <button
+            onClick={goBack}
+            className="back_btn"
+            // style={{
+            //   background: "none",
+            //   border: "none",
+            //   cursor: "pointer",
+            //   fontSize: "20px",
+            //   marginRight: "10px",
+            // }}
+          >
+            🔙
+          </button>
+        </div>
+        <div className="form-section">
+          <h2>Users</h2>
+          <Link to="/create-user" className="btn btn-primary">Create User</Link>
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users?.result?.map((user) => (
-                <tr key={user._id}>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{user.role}</td>
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  {/* <th>Role</th> */}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {users?.result?.length > 0 ? (
+                  users.result.map((user) => (
+                    <tr key={user._id}>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      {/* <td>{user.role}</td> */}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No users found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );

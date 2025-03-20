@@ -33,6 +33,6 @@ router.route('/user/:id')
 
 router.get('/allusers', auth, UserCreationAccess, user_controller.getAllUsers);
 
-router.get('/get-users?id=', auth, UserCreationAccess, user_controller.getuserbyids);
+router.post('/get-users', auth, UserCreationAccess, user_controller.getuserbyids);
 
 module.exports = router;

@@ -20,11 +20,28 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+// Fetch User Details by ID
+export const fetchUserById = createAsyncThunk(
+  "users/fetchUserById",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(`${API_URL}/get-users`,{ ids: userId } , {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      
+      return { userId, data: res.data.data };
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to fetch user data");
+    }
+  }
+);
+
 //  Create User
 export const createUser = createAsyncThunk(
   "users/createUser",
   async (userData, { rejectWithValue }) => {
     try {
+      console.log(userData);
       const res = await axios.post(`${API_URL}/create-user`, userData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -58,6 +75,7 @@ const userSlice = createSlice({
   name: "users",
   initialState: {
     users: [],
+    userDetails: {},
     loading: false,
     error: null,
   },
@@ -75,6 +93,15 @@ const userSlice = createSlice({
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload?.message || "Failed to fetch users";
+      })
+
+      // ✅ Fetch User By ID
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        // const { userId, data } = action.payload;
+        state.userDetails = action.payload;  // Store user details in the state
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
         state.error = action.payload;
       })
 
@@ -84,6 +111,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(Array.isArray(state.users)); 
         state.users.push(action.payload);
       })
       .addCase(createUser.rejected, (state, action) => {
