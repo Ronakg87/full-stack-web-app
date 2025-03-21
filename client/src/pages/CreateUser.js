@@ -48,7 +48,7 @@ const CreateUser = () => {
             <label>Password:</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-            <button type="submit">Create User</button>
+            <button type="submit" className="submit-btn">Create User</button>
           </form>
         </div>
       </div>

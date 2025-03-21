@@ -10,19 +10,20 @@ import Users from "./pages/Users";
 import CreateUser from "./pages/CreateUser";
 import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
+import Profile from "./pages/Profile";
 // import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 
 function App() {
   const isAuthenticated = localStorage.getItem("token");
 
-  const {pathname} = useLocation();
+  const location = useLocation();
 
   return (
     <>
-    {pathname !== "/" ? <Navbar /> : ""}
+    {location.pathname !== "/" ? <Navbar /> : ""}
       
-      <Routes>
+      <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Login />} />
         <Route
           path="/dashboard"
@@ -43,6 +44,10 @@ function App() {
         <Route
           path="/create-product"
           element={isAuthenticated ? <CreateProduct /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/profile"
+          element={isAuthenticated ? <Profile /> : <Navigate to="/" />}
         />
         {/* <Route
           path="/admin"

@@ -67,6 +67,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../features/productSlice";
 import { fetchUsers } from "../features/userSlice";
+import { userInfo } from "../features/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Sidebar from "../components/Sidebar";
@@ -83,12 +84,17 @@ const CreateProduct = () => {
   const [assignedTo, setAssignedTo] = useState([]);
 
   const { users, loading } = useSelector((state) => state.users);
-  const currentUser = JSON.parse(localStorage.getItem("user"));  // Get current user
+  const { user } = useSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    dispatch(userInfo());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
-console.log(users);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -120,7 +126,7 @@ console.log(users);
 
   // Filter users excluding current user and admin
   const filteredUsers = users?.result?.filter(
-    (user) => user._id !== currentUser._id && user.role !== "admin"
+    (cuser) => cuser._id !== user?.user?._id && cuser.role !== "admin"
   );
 
   return (
@@ -165,7 +171,7 @@ console.log(users);
               {loading ? (
                 <option>Loading...</option>
               ) : (
-                users?.result?.map((user) => (
+                filteredUsers?.map((user) => (
                   <option key={user._id} value={user._id}>
                     {user.name}
                   </option>
@@ -173,7 +179,7 @@ console.log(users);
               )}
             </select>
 
-            <button type="submit">Create Product</button>
+            <button type="submit" className="submit-btn">Create Product</button>
           </form>
         </div>
       </div>

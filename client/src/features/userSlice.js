@@ -25,10 +25,10 @@ export const fetchUserById = createAsyncThunk(
   "users/fetchUserById",
   async (userId, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/get-users`,{ ids: userId } , {
+      const res = await axios.post(`${API_URL}/get-users`, { ids: userId }, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      
+
       return { userId, data: res.data.data };
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch user data");
@@ -50,6 +50,24 @@ export const createUser = createAsyncThunk(
     } catch (error) {
       toast.error(error.response?.data || "Failed to create user");
       return rejectWithValue(error.response?.data || "Failed to create user");
+    }
+  }
+);
+
+//  Create User
+export const updateUser = createAsyncThunk(
+  "users/updateUser",
+  async ({ userId, userData }, { rejectWithValue }) => {
+    try {
+
+      const res = await axios.post(`${API_URL}/user/${userId}`, userData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      toast.success("User updated successfully!");
+      return res.data;
+    } catch (error) {
+      toast.error(error.response?.data || "Failed to update user");
+      return rejectWithValue(error.response?.data || "Failed to update user");
     }
   }
 );
@@ -96,7 +114,7 @@ const userSlice = createSlice({
         state.error = action.payload?.message || "Failed to fetch users";
       })
 
-      // ✅ Fetch User By ID
+      // Fetch User By ID
       .addCase(fetchUserById.fulfilled, (state, action) => {
         // const { userId, data } = action.payload;
         state.userDetails = action.payload;  // Store user details in the state
@@ -111,7 +129,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(Array.isArray(state.users)); 
+        console.log(Array.isArray(state.users));
         state.users.push(action.payload);
       })
       .addCase(createUser.rejected, (state, action) => {
@@ -128,6 +146,27 @@ const userSlice = createSlice({
         state.users = state.users.filter((user) => user._id !== action.payload);
       })
       .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // ✅ Update User
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+
+        // Update the user in the state
+        const index = state.users.findIndex(
+          (user) => user._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.users[index] = action.payload;  // Update user details
+        }
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

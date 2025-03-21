@@ -25,7 +25,6 @@ const Products = () => {
   useEffect(() => {
     dispatch(fetchUserById(userIds));
   }, [dispatch, userIds]);
-  console.log(userDetails);
 
   const handleDelete = async (id) => {
     await dispatch(deleteProduct(id));

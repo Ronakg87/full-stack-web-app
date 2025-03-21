@@ -10,7 +10,6 @@ const Users = () => {
   const navigate = useNavigate();
   const { users, loading, error } = useSelector((state) => state.users);
 
-
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
@@ -60,16 +59,14 @@ const Users = () => {
                 <tr>
                   <th>Name</th>
                   <th>Email</th>
-                  {/* <th>Role</th> */}
                 </tr>
               </thead>
               <tbody>
                 {users?.result?.length > 0 ? (
-                  users.result.map((user) => (
+                  users?.result?.map((user) => (
                     <tr key={user._id}>
                       <td>{user.name}</td>
                       <td>{user.email}</td>
-                      {/* <td>{user.role}</td> */}
                     </tr>
                   ))
                 ) : (
