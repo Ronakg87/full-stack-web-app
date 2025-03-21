@@ -220,22 +220,6 @@ button:hover {
   display: flex;
 }
 
-.stats {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-}
-
-.card {
-  background: #fff;
-  box-shadow: 0 4px 8px #ccc;
-  border-radius: 10px;
-  padding: 20px;
-  width: 300px;
-  text-align: center;
-}
-
-
 /* Sidebar */
 /* .sidebar {
   width: 250px;
@@ -252,7 +236,7 @@ button:hover {
 
 /* Content Section */
 .content-container {
-  margin-left: 25%;   /* Space for the sidebar */
+  margin-left: 20%;   /* Space for the sidebar */
   padding: 5px 40px;
   flex: 1;
   background: #f4f4f4;
@@ -269,7 +253,7 @@ button:hover {
 /* Stats */
 .stats {
   display: flex;
-  justify-content: space-around;
+  justify-content: start;
   margin-top: 20px;
 }
 
@@ -277,8 +261,9 @@ button:hover {
   background: white;
   box-shadow: 0 5px 15px #ccc;
   border-radius: 10px;
+  margin: 22px;
   padding: 20px;
-  width: 300px;
+  width: 280px;
   text-align: center;
   transition: 0.3s;
 }

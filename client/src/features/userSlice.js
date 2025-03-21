@@ -45,7 +45,6 @@ export const createUser = createAsyncThunk(
       const res = await axios.post(`${API_URL}/create-user`, userData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      toast.success("User created successfully!");
       return res.data;
     } catch (error) {
       toast.error(error.response?.data || "Failed to create user");
@@ -57,13 +56,12 @@ export const createUser = createAsyncThunk(
 //  Create User
 export const updateUser = createAsyncThunk(
   "users/updateUser",
-  async ({ userId, userData }, { rejectWithValue }) => {
+  async ({ userId, name, email }, { rejectWithValue }) => {
     try {
 
-      const res = await axios.post(`${API_URL}/user/${userId}`, userData, {
+      const res = await axios.patch(`${API_URL}/user/${userId}`, { name: name, email: email}, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      toast.success("User updated successfully!");
       return res.data;
     } catch (error) {
       toast.error(error.response?.data || "Failed to update user");
@@ -80,7 +78,7 @@ export const deleteUser = createAsyncThunk(
       await axios.delete(`${API_URL}/user/${userId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      toast.success("User deleted successfully!");
+      // toast.success("User deleted successfully!");
       return userId;
     } catch (error) {
       toast.error(error.response?.data || "Failed to delete user");
@@ -129,8 +127,10 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(Array.isArray(state.users));
-        state.users.push(action.payload);
+        if (!Array.isArray(state.users)) {
+          state.users = []; // Reinitialize as an array
+        }
+        state?.users?.push(action.payload);
       })
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;

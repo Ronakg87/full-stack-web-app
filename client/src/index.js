@@ -5,6 +5,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
 import App from './App';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./styles.css";
 // import reportWebVitals from './reportWebVitals';
 
@@ -13,6 +15,7 @@ root.render(
   <Provider store={store}>
     <Router>
       <App />
+      <ToastContainer />
     </Router>
   </Provider>
 );

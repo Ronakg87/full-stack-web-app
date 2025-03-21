@@ -242,7 +242,7 @@ const getuser = async (req, res) => {
 
 const updateuser = async (req, res) =>{
   const uid = req.params.id;
-
+  
   try {
     if(req.user._id != uid){
       return res.status(200).send({success: true, msg:"Authrization token is not matched."});
