@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { userInfo } from "../features/authSlice";
 import { updateUser } from "../features/userSlice";
 import { toast } from "react-toastify";
+import AuthGuard from "../components/AuthGuard";
 // import "./Profile.css";
 
 const Profile = () => {
@@ -49,7 +50,7 @@ const Profile = () => {
       await dispatch(updateUser({ userId, name, email }));
       toast.success("Profile Updated Successfully.");
     } catch (error) {
-      toast.error("Failed to update profile.");
+      toast.error("Failed to update profile.", error);
     } finally {
       setLoading(false); // Stop loading
     }
@@ -60,6 +61,7 @@ const Profile = () => {
   };
 
   return (
+    <AuthGuard>
     <div className="profile-container">
       <Sidebar />
       <div className="content">
@@ -77,6 +79,7 @@ const Profile = () => {
           <form onSubmit={handleSubmit}>
             <label>Name:</label>
             <input
+              className="input-textbox"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -84,6 +87,7 @@ const Profile = () => {
 
             <label>Email:</label>
             <input
+              className="input-textbox"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -101,6 +105,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 };
 

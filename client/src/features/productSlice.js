@@ -60,9 +60,9 @@ export const updateProduct = createAsyncThunk(
 // Delete Product
 export const deleteProduct = createAsyncThunk(
   "products/deleteProduct",
-  async (productId, { rejectWithValue }) => {
+  async ({productId, source}, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/product/${productId}`, {
+      await axios.delete(`${API_URL}/product/${productId}/${source}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       toast.success("Product deleted successfully!");
@@ -104,7 +104,10 @@ const productSlice = createSlice({
       })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products.push(action.payload);
+        if (!Array.isArray(state.users)) {
+          state.users = []; // Reinitialize as an array
+        }
+        state?.users?.push(action.payload);
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
@@ -135,9 +138,13 @@ const productSlice = createSlice({
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = state.products.filter(
-          (product) => product._id !== action.payload
+        const deletedId = action.payload?.id || action.payload; 
+
+        if (Array.isArray(state.products)) {
+          state.products = state.products.filter(
+          (product) => product._id !== deletedId
         );
+    }
       })
       .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;

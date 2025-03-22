@@ -7,6 +7,7 @@ import store from "./store";
 import App from './App';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import '@coreui/coreui-pro/dist/css/coreui.min.css';
 import "./styles.css";
 // import reportWebVitals from './reportWebVitals';
 

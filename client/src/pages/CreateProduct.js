@@ -71,6 +71,8 @@ import { userInfo } from "../features/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Sidebar from "../components/Sidebar";
+import { CMultiSelect } from '@coreui/react-pro'
+import AuthGuard from "../components/AuthGuard";
 
 const CreateProduct = () => {
   const dispatch = useDispatch();
@@ -129,7 +131,18 @@ const CreateProduct = () => {
     (cuser) => cuser._id !== user?.user?._id && cuser.role !== "admin"
   );
 
+  const options = filteredUsers?.map((user) => ({
+    value: user._id,
+    label: user.name
+  })) || [];
+
+  // Handle selection
+  const handleChange = (selected) => {
+    const selectedValues = selected.map((item) => item.value);
+    setAssignedTo(selectedValues);
+  };
   return (
+    <AuthGuard>
     <div className="dashboard-container">
       <Sidebar />
       <div className="content">
@@ -144,22 +157,21 @@ const CreateProduct = () => {
 
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <label>Name:</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+            <input type="text" className="input-textbox" value={name} onChange={(e) => setName(e.target.value)} required />
 
             <label>SKU:</label>
-            <input type="text" value={sku} onChange={(e) => setSku(e.target.value)} required />
+            <input type="text" className="input-textbox" value={sku} onChange={(e) => setSku(e.target.value)} required />
 
             <label>Description:</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+            <textarea className="input-textbox" value={description} onChange={(e) => setDescription(e.target.value)} required />
 
             <label>Category:</label>
-            <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
+            <input type="text" className="input-textbox" value={category} onChange={(e) => setCategory(e.target.value)} required />
 
             <label>Logo:</label>
-            <input type="file" onChange={handleFileChange} required />
+            <input type="file" className="input-textbox" onChange={handleFileChange} required />
 
-            <label>Assign To:</label>
-            <select
+            {/* <select
               multiple
               value={assignedTo}
               onChange={(e) => {
@@ -177,13 +189,28 @@ const CreateProduct = () => {
                   </option>
                 ))
               )}
-            </select>
+            </select> */}
+
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <CMultiSelect
+                options={options}
+                label="Assign To"
+                text="Please select users"
+                search="global"
+                selectionType="tags"
+                onChange={handleChange}
+                value={assignedTo}
+              />
+            )}
 
             <button type="submit" className="submit-btn">Create Product</button>
           </form>
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 };
 

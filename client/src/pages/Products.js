@@ -5,6 +5,7 @@ import { fetchUserById } from "../features/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { toast } from "react-toastify";
+import AuthGuard from "../components/AuthGuard";
 
 
 const Products = () => {
@@ -19,15 +20,23 @@ const Products = () => {
 
   // const userIds = [...new Set(products?.result?.map((p) => p.assignedTo).flat())];
   const userIds = useMemo(() => {
-    return [...new Set(products?.result?.map((p) => p.assignedTo).flat())];
+    const ids = products?.result
+      ?.map((p) => p.assignedTo)
+      .flat()
+      .map((id) => {
+        // Remove square brackets and quotes around stringified IDs
+        return id.replace(/^\["|"\]$/g, '');
+      });
+  
+    return [...new Set(ids)];
   }, [products]);
 
   useEffect(() => {
     dispatch(fetchUserById(userIds));
   }, [dispatch, userIds]);
 
-  const handleDelete = async (id) => {
-    await dispatch(deleteProduct(id));
+  const handleDelete = async (id, source) => {
+    await dispatch(deleteProduct({productId: id, source}));
     toast.success("Product deleted successfully!");
     dispatch(fetchProducts());
   };
@@ -52,6 +61,7 @@ const Products = () => {
   };
   
   return (
+    <AuthGuard>
     <div className="dashboard-container">
       <Sidebar />
       <div className="content">
@@ -98,7 +108,7 @@ const Products = () => {
                     <td>
                       {/* <Link to={`/edit-product/${product._id}`} className="edit-product-btn">Edit</Link> */}
                       <button className="edit-btn" onClick={() => navigate(`/edit-product/${product._id}`)}>Edit</button>
-                      <button className="delete-btn" onClick={() => handleDelete(product._id)}>
+                      <button className="delete-btn" onClick={() => handleDelete(product._id, product.source)}>
                         Delete
                       </button>
                     </td>
@@ -110,6 +120,7 @@ const Products = () => {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 };
 

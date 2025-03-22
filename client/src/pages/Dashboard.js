@@ -4,6 +4,7 @@ import { fetchProducts } from "../features/productSlice";
 import { fetchUsers } from "../features/userSlice";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
+import AuthGuard from '../components/AuthGuard';
 // import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -11,7 +12,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { products } = useSelector((state) => state.products);
   const { users } = useSelector((state) => state.users);
-  const { user } = useSelector((state) => state);
+  // const { user } = useSelector((state) => state);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -23,6 +24,7 @@ const Dashboard = () => {
   };
 console.log(localStorage.getItem('role'));
   return (
+    <AuthGuard>
     <div className="main-container">
       <Sidebar />
       <div className="content-container">
@@ -50,6 +52,7 @@ console.log(localStorage.getItem('role'));
           </div>
       </div>
     </div>
+    </AuthGuard>
   );
 };
 

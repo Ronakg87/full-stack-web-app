@@ -158,6 +158,7 @@ const Login = () => {
         <label>Email:</label>
         <input
           type="email"
+          className="input-textbox"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -166,12 +167,13 @@ const Login = () => {
         <label>Password:</label>
         <input
           type="password"
+          className="input-textbox"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? "Loading..." : "Login"}
         </button>
       </form>

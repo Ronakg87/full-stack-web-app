@@ -26,7 +26,6 @@ export const userInfo = createAsyncThunk(
       const res = await axios.get(`${API_URL}/auth`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch products");

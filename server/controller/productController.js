@@ -2,33 +2,49 @@ const { default: mongoose } = require('mongoose');
 const Product = require('../model/productModel');
 
 const add_product = async (req, res) => {
-// console.log(req.body);
-    try {
-        const product = new Product({
+  try {
+      // Ensure assignedTo is saved as an array of strings
+      let assignedTo = req.body.assignedTo;
+
+      // Check if assignedTo is a stringified array and parse it
+      if (typeof assignedTo === 'string') {
+          try {
+              assignedTo = JSON.parse(assignedTo);
+          } catch (error) {
+              console.error("Invalid JSON format for assignedTo:", error);
+              return res.status(400).send({ success: false, msg: "Invalid assignedTo format" });
+          }
+      }
+
+      // Ensure it is always saved as an array
+      if (!Array.isArray(assignedTo)) {
+          assignedTo = [assignedTo];
+      }
+
+      const product = new Product({
           name: req.body.name,
           sku: req.body.sku,
           description: req.body.description,
           category: req.body.category,
           logo: req.file.filename,
           source: req.user.role,
-          assignedTo: req.body.assignedTo
-            
-        });
+          user_id: req.user._id,
+          assignedTo: assignedTo
+      });
 
-        const productData = await Product.findOne({ name: req.body.name });
-        if (productData) {
-        res
-            .status(400)
-            .send({ success: false, msg: "This Product is already exists." });
-        } else {
-        const product_data = await product.save();
-        res.status(200).send({ success: true, data: product_data });
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(400).send({success: false, msg: error.message})
-    } 
-}
+      const productData = await Product.findOne({ name: req.body.name });
+      if (productData) {
+          res.status(400).send({ success: false, msg: "This Product already exists." });
+      } else {
+          const product_data = await product.save();
+          res.status(200).send({ success: true, data: product_data });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(400).send({ success: false, msg: error.message });
+  }
+};
+
 
 // const getcategories = async (req, res) => {
 
@@ -56,14 +72,20 @@ const add_product = async (req, res) => {
 
 const deleteproduct = async (req, res) => {
     const deleteid = req.params.id;
-    
+    const source = req.params.source;
     try {
-      // if(req.user._id != deleteid){
-      //   return res.status(200).send({success: true, msg:"Authrization token is not matched."});
-      // }
+      if(req.user.role === "user" && source === "admin"){
+        const updatedProduct = await Product.findOneAndUpdate(
+          { _id: deleteid},   // Filter by product ID and the current user's ID
+          { $pull: { assignedTo: req.user._id } },           // Remove the `userid` from `assignedTo`
+          { new: true }                                // Return the updated document
+        );
+        res.status(200).send({ success: true,  msg:"Product has deleted successfully."});
+      } else { 
+        const del_product = await Product.findOneAndDelete({_id:deleteid, user_id: req.user._id});
+        res.status(200).send({ success: true,  msg:"Product has deleted successfully."});
+      }
       
-      const del_product = await Product.findOneAndDelete({_id:deleteid, assignedTo: req.user._id});
-      res.status(200).send({ success: true,  msg:"User has deleted successfully."});
       
     } catch (error) {
       res.status(400).send({success: false, msg: error.message});

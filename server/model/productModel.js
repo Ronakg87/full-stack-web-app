@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const product = mongoose.Schema({
-    // user:{
-    //     type:mongoose.Schema.ObjectId,
-    //     ref: "User"
-    // },
     name:{
         type:String,
         required: true
@@ -25,6 +21,10 @@ const product = mongoose.Schema({
     logo:{
         type:String,
         required:true
+    },
+    user_id:{
+        type:mongoose.Schema.ObjectId,
+        ref: "User"
     },
     source:{
         type:String,

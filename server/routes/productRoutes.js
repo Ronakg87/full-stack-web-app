@@ -24,7 +24,7 @@ router.post('/add-product', auth, upload.single('logo'),
   product_controller.add_product
 );
 
-router.route('/product/:id')
+router.route('/product/:id/:source')
   .delete(auth, product_controller.deleteproduct)
   .patch(auth, product_controller.updateproduct)
   .get(auth, product_controller.getproduct);

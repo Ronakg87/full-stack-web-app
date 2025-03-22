@@ -152,7 +152,7 @@ label {
   font-weight: bold;
 }
 
-input {
+.input-textbox, textarea {
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -315,7 +315,7 @@ body {
   box-shadow: 0 0 10px #ccc;
   margin-left: 20.5%;
   /* padding: 0px 25px; */
-  width: 80%;
+  width: 79.5%;
 }
 
 .form-section {
@@ -447,5 +447,12 @@ table tr:hover {
 .submit-btn {
   margin: 25px 0px;
 }
+
+select {
+  width: 200px;
+  height: 120px;
+  font-size: 14px;
+}
+
 
 

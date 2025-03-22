@@ -4,6 +4,7 @@ import { logoutUser } from "../features/authSlice";
 import { fetchUsers } from "../features/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import AuthGuard from "../components/AuthGuard";
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const Users = () => {
   };
 
   return (
+    <AuthGuard>
     <div className="dashboard-container">
       <Sidebar />
       <div className="content">
@@ -80,6 +82,7 @@ const Users = () => {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 };
 
