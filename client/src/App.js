@@ -11,6 +11,7 @@ import CreateUser from "./pages/CreateUser";
 import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
 import Profile from "./pages/Profile";
+import EditProduct from "./pages/EditProduct";
 // import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 
@@ -44,6 +45,10 @@ function App() {
         <Route
           path="/create-product"
           element={isAuthenticated ? <CreateProduct /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/edit-product/:id"
+          element={isAuthenticated ? <EditProduct /> : <Navigate to="/" />}
         />
         <Route
           path="/profile"

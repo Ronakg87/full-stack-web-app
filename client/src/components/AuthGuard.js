@@ -13,7 +13,7 @@ const navigate = useNavigate();
     } else {
       setIsAuth(true);
     }
-  }, []);
+  }, [navigate]);
 
   if (!isAuth) return null; // Prevent rendering until auth check is complete
 

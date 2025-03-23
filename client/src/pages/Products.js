@@ -17,7 +17,7 @@ const Products = () => {
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
-
+  console.log(products);
   // const userIds = [...new Set(products?.result?.map((p) => p.assignedTo).flat())];
   const userIds = useMemo(() => {
     const ids = products?.result
@@ -41,7 +41,7 @@ const Products = () => {
     dispatch(fetchProducts());
   };
 
-
+  // console.log(products);
   // Helper function to get assigned user names
   const getAssignedUsers = (assignedTo) => {
     if (!assignedTo?.length) return "Not assigned";
@@ -96,7 +96,8 @@ const Products = () => {
                 </tr>
               </thead>
               <tbody>
-                {products?.result?.map((product) => (
+              {products?.result?.length > 0 ? (
+                products?.result?.map((product) => (
                   <tr key={product._id}>
                     <td>{product.name}</td>
                     <td>{product.sku}</td>
@@ -113,7 +114,12 @@ const Products = () => {
                       </button>
                     </td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-align-center">No product found.</td>
+                </tr>
+              )}
               </tbody>
             </table>
           )}

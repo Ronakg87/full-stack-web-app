@@ -73,7 +73,7 @@ const Users = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="3">No users found.</td>
+                    <td colSpan="3" className="text-align-center">No users found.</td>
                   </tr>
                 )}
               </tbody>

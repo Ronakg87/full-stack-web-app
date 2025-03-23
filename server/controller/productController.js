@@ -1,6 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const Product = require('../model/productModel');
-
+require('dotenv').config();
 const add_product = async (req, res) => {
   try {
       // Ensure assignedTo is saved as an array of strings
@@ -45,31 +45,6 @@ const add_product = async (req, res) => {
   }
 };
 
-
-// const getcategories = async (req, res) => {
-
-//   try {
-//     const cdata = await Category.find({});
-//     res.status(200).send({success: true, msg:"category details fetched successfully.", data: cdata});
-//   } catch (error) {
-//     res.status(400).send({success: false, msg: error.message});
-//   }
-  
-// }
-
-// const delete_category = async (req, res) => {
-//     const deleteid = req.params.id;
-//     try {
-        
-//         const del_category = await Category.findByIdAndRemove({_id:deleteid});
-//         res.status(200).send({ success: true,  msg:"Category has delete successfully."});
-        
-//       } catch (error) {
-//         res.status(400).send({success: false, msg: error.message});
-//       }
-
-// }
-
 const deleteproduct = async (req, res) => {
     const deleteid = req.params.id;
     const source = req.params.source;
@@ -94,14 +69,14 @@ const deleteproduct = async (req, res) => {
 
 const getproduct = async (req, res) => {
   const id = req.params.id;
-  
+
   try {
     // if(req.user._id != id){
     //   return res.status(200).send({success: true, msg:"Authrization token is not matched."});
     // }
   
     // const userdata = await Product.findById({_id:id});
-    const productdata = await Product.find({_id:id, assignedTo: req.user._id}).populate('assignedTo', '_id name email');
+    const productdata = await Product.findById({ _id:id });
     // console.log(productdata);
     if(productdata.length === 0){
       res.status(200).send({success: true, msg:"No Data Found.", data: productdata});
@@ -110,9 +85,8 @@ const getproduct = async (req, res) => {
   } catch (error) {
     res.status(400).send({success: false, msg: error.message});
   }
-  
-}
 
+}
 const updateproduct = async (req, res) =>{
   const pid = req.params.id;
 
@@ -125,22 +99,68 @@ const updateproduct = async (req, res) =>{
       return res.status(404).json({success: false, message: "Please provide valid Product id"});
     }
 
-    const userdata = Product.find({ _id : pid});
+    const productdata = await Product.findById(pid);
+    if(!productdata) return res.status(404).json({success: false, msg:"Product not found."});
+   
+    const {
+      name,
+      sku,
+      description,
+      category,
+      source,
+    } = req.body;
     
-    if(!userdata) return res.status(404).json({success: false, msg:"user is not found !!!"});
-    const new_pname = req.body.name;
-    // const new_psku = req.body.sku;
-    const new_pdescription = req.body.description;
-    const new_category = req.body.category;
-    const new_assignedTo = req.body.assignedTo;
-    const new_source = req.body.source;
+    let assignedTo = req.body.assignedTo;
+
+    let logo = productdata.logo; // Use existing logo by default
+    if (req.file) {
+      // Check if a new logo file was uploaded
+      logo = req.file.filename; // Assuming `req.file.filename` contains the uploaded file name
+
+      // Optional: Delete old logo from server (if applicable)
+      const fs = require("fs");
+      const oldLogoPath = `${process.env.ROOTURL}/productLogo/${logo}`;
+      if (fs.existsSync(oldLogoPath)) {
+        fs.unlinkSync(oldLogoPath);
+      }
+    }
+
+    // Check if assignedTo is a stringified array and parse it
+    if (typeof assignedTo === 'string') {
+      try {
+          assignedTo = JSON.parse(assignedTo);
+      } catch (error) {
+          console.error("Invalid JSON format for assignedTo:", error);
+          return res.status(400).send({ success: false, msg: "Invalid assignedTo format" });
+      }
+  }
+
+  // Ensure it is always saved as an array
+  if (!Array.isArray(assignedTo)) {
+      assignedTo = [assignedTo];
+  }
     
-    const updatedata = await Product.findOneAndUpdate({ _id:pid, assignedTo: req.user._id }, {
-      $set: {
-        name: new_pname, description: new_pdescription, category: new_category, assignedTo: new_assignedTo, source: new_source,
-      }},{new: true});
+      const updatedProduct = await Product.findByIdAndUpdate(
+        pid,
+        {
+          $set: {
+            name,
+            sku,
+            description,
+            category,
+            logo,
+            assignedTo,
+            source,
+          },
+        },
+        { new: true }
+      );
+    // const updatedata = await Product.findOneAndUpdate({ _id:pid, assignedTo: req.user._id }, {
+    //   $set: {
+    //     name: new_pname, description: new_pdescription, category: new_category, assignedTo: new_assignedTo, source: new_source,
+    //   }},{new: true});
     
-    if(updatedata) res.status(200).json({success: true, msg:`Product updated with ${updatedata} successfully.`})
+    if(updatedProduct) res.status(200).json({success: true, msg:`Product Updated Successfully.`});
     
   } catch (error) {
     res.status(400).json({success: false, msg: error.message});

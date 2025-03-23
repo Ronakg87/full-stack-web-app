@@ -24,10 +24,11 @@ router.post('/add-product', auth, upload.single('logo'),
   product_controller.add_product
 );
 
-router.route('/product/:id/:source')
-  .delete(auth, product_controller.deleteproduct)
-  .patch(auth, product_controller.updateproduct)
+router.route('/product/:id')
+  .patch(auth, upload.single('logo'), product_controller.updateproduct)
   .get(auth, product_controller.getproduct);
+
+router.delete('/product/:id/:source', auth, product_controller.deleteproduct);
 
 router.get('/all-products', auth, product_controller.getallproducts);
 router.post('/assign-product/:id', auth, product_controller.assignProductToUsers);
